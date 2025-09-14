@@ -5,6 +5,7 @@ import com.jpmc.midascore.entity.UserRecord;
 import com.jpmc.midascore.repository.TransactionRecordsRepository;
 import com.jpmc.midascore.repository.UserRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -33,7 +34,10 @@ public class DatabaseConduit {
         return userRepository.findById(id).getBalance();
     }
 
-    public void saveTransaction(long senderID, long recipientID, float amount) {
+
+    // needed to make this atomic
+    @Transactional
+    public void saveTransaction(long senderID, long recipientID, float amount, float incentive) {
         UserRecord sender = userRepository.findById(senderID);
         UserRecord recipient = userRepository.findById(recipientID);
         TransactionRecord transactionRecord = new TransactionRecord(recipient, sender, amount);
@@ -41,13 +45,13 @@ public class DatabaseConduit {
         transactionRecordsRepository.save(transactionRecord);
         // update user balance
         sender.setBalance(sender.getBalance() - amount);
-        recipient.setBalance(recipient.getBalance() + amount);
+        recipient.setBalance(recipient.getBalance() + amount + incentive);
         userRepository.save(sender);
         userRepository.save(recipient);
     }
 
 
-    public boolean isWaldorf(long id) {
-        return userRepository.findById(id).getName().equalsIgnoreCase("waldorf");
+    public String isPerson(long id) {
+        return userRepository.findById(id).getName();
     }
 }
