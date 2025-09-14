@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class TransactionListener {
 
@@ -22,13 +24,29 @@ public class TransactionListener {
 
     @KafkaListener(topics = "${general.kafka-topic}")
     public void listenToTransactions(Transaction transaction) {
-        System.out.println("Recieved transaction amount: " + transaction.getAmount());
+        //System.out.println("Recieved transaction amount: " + transaction.getAmount());
         //log.info("Received transaction: {}", transaction.getAmount());
 
         if (databaseConduit.doesUserExist(transaction.getRecipientId()) &&
             databaseConduit.doesUserExist(transaction.getSenderId())) {
-            if (databaseConduit.getUserBalance(transaction.getSenderId()) < transaction.getAmount()) {
+            if (databaseConduit.getUserBalance(transaction.getSenderId()) >= transaction.getAmount()) {
                 // success
+                databaseConduit.saveTransaction(transaction.getSenderId(),
+                        transaction.getRecipientId(),
+                        transaction.getAmount());
+
+                log.info("Successfully saved transaction to database");
+                //log.info("User new balance {}, Recipient new balance {}",databaseConduit.getUserBalance(transaction.getSenderId()),databaseConduit.getUserBalance(transaction.getRecipientId()));
+
+                if (databaseConduit.isWaldorf(transaction.getRecipientId())) {
+                    log.info("Waldorf balance {}", databaseConduit.getUserBalance(transaction.getRecipientId()));
+                }
+                else if (databaseConduit.isWaldorf(transaction.getSenderId())) {
+                    log.info("Waldorf balance {}", databaseConduit.getUserBalance(transaction.getSenderId()));
+                }
+                else {
+                    log.info("Neither of these are Waldorf");
+                }
             }
             // user balance too low to send
             else {

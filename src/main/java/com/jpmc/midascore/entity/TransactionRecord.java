@@ -22,11 +22,49 @@ public class TransactionRecord {
     private UserRecord sender;
 
     @Column(nullable = false)
-    private double amount;
+    private float amount;
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
     protected TransactionRecord() {}
+
+    public TransactionRecord(UserRecord recipient, UserRecord sender, float amount) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.amount = amount;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public UserRecord getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(UserRecord recipient) {
+        this.recipient = recipient;
+    }
+
+    public UserRecord getSender() {
+        return sender;
+    }
+
+    public void setSender(UserRecord sender) {
+        this.sender = sender;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
 }
