@@ -2,6 +2,7 @@ package com.jpmc.midascore.web;
 
 import com.jpmc.midascore.component.DatabaseConduit;
 import com.jpmc.midascore.foundation.Balance;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ public class BalanceController {
     }
 
     @GetMapping
+    @Transactional(readOnly = true)
     public Balance getBalance(@RequestParam Long userId) {
         // make sure user exists
         float balance;

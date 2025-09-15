@@ -26,23 +26,23 @@ public class DatabaseConduit {
         userRepository.save(userRecord);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean doesUserExist(long id) {
         return userRepository.existsById(id);
     }
 
     // should use map and orElse to throw exception to be more safe
-    @Transactional
+    @Transactional(readOnly = true)
     public float getUserBalance(long id) {
-        return userRepository.findById(id).getBalance();
+        return userRepository.findById(id).map(UserRecord::getBalance).orElse(0.0f);
     }
 
 
     // needed to make this atomic
     @Transactional
     public void saveTransaction(long senderID, long recipientID, float amount, float incentive) {
-        UserRecord sender = userRepository.findById(senderID);
-        UserRecord recipient = userRepository.findById(recipientID);
+        UserRecord sender = userRepository.findById(senderID).orElseThrow(() -> new RuntimeException("sender not found"));
+        UserRecord recipient = userRepository.findById(recipientID).orElseThrow(() -> new RuntimeException("recipient not found"));
         TransactionRecord transactionRecord = new TransactionRecord(recipient, sender, amount, incentive);
         transactionRecord.setTimestamp(LocalDateTime.now());
         transactionRecordsRepository.save(transactionRecord);
@@ -53,8 +53,8 @@ public class DatabaseConduit {
         userRepository.save(recipient);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String isPerson(long id) {
-        return userRepository.findById(id).getName();
+        return userRepository.findById(id).map(UserRecord::getName).orElse("");
     }
 }

@@ -32,6 +32,7 @@ public class TaskFiveTests {
     void task_five_verifier() throws InterruptedException {
         userPopulator.populate();
         String[] transactionLines = fileLoader.loadStrings("/test_data/rueiwoqp.tyruei");
+        Thread.sleep(4000);
         for (String transactionLine : transactionLines) {
             kafkaProducer.send(transactionLine);
         }

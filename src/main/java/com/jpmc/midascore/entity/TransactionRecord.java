@@ -31,7 +31,7 @@ public class TransactionRecord {
     private LocalDateTime timestamp;
 
     protected TransactionRecord() {}
-
+    
     public TransactionRecord(UserRecord recipient, UserRecord sender, float amount, float incentive) {
         this.sender = sender;
         this.recipient = recipient;
