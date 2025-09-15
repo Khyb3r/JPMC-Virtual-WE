@@ -21,15 +21,18 @@ public class DatabaseConduit {
         this.transactionRecordsRepository = transactionRecordsRepository;
     }
 
+    @Transactional
     public void save(UserRecord userRecord) {
         userRepository.save(userRecord);
     }
 
+    @Transactional
     public boolean doesUserExist(long id) {
         return userRepository.existsById(id);
     }
 
     // should use map and orElse to throw exception to be more safe
+    @Transactional
     public float getUserBalance(long id) {
         return userRepository.findById(id).getBalance();
     }
@@ -40,7 +43,7 @@ public class DatabaseConduit {
     public void saveTransaction(long senderID, long recipientID, float amount, float incentive) {
         UserRecord sender = userRepository.findById(senderID);
         UserRecord recipient = userRepository.findById(recipientID);
-        TransactionRecord transactionRecord = new TransactionRecord(recipient, sender, amount);
+        TransactionRecord transactionRecord = new TransactionRecord(recipient, sender, amount, incentive);
         transactionRecord.setTimestamp(LocalDateTime.now());
         transactionRecordsRepository.save(transactionRecord);
         // update user balance
@@ -50,7 +53,7 @@ public class DatabaseConduit {
         userRepository.save(recipient);
     }
 
-
+    @Transactional
     public String isPerson(long id) {
         return userRepository.findById(id).getName();
     }

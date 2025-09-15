@@ -5,7 +5,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: '*'
+        spring.json.trusted.packages: 'com.jpmc.midascore.foundation.*,com.jpmc.*'
       group-id: midas-core
     bootstrap-servers: localhost:9092
     producer:
@@ -13,6 +13,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 general:
   kafka-topic: transactions-topic
-
+server:
+  port: 33400
 
 

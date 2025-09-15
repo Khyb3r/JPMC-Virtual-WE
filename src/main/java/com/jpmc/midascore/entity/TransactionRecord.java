@@ -25,14 +25,18 @@ public class TransactionRecord {
     private float amount;
 
     @Column(nullable = false)
+    private float incentive;
+
+    @Column(nullable = false)
     private LocalDateTime timestamp;
 
     protected TransactionRecord() {}
 
-    public TransactionRecord(UserRecord recipient, UserRecord sender, float amount) {
+    public TransactionRecord(UserRecord recipient, UserRecord sender, float amount, float incentive) {
         this.sender = sender;
         this.recipient = recipient;
         this.amount = amount;
+        this.incentive = incentive;
     }
 
     public float getAmount() {

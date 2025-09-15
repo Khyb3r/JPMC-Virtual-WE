@@ -27,7 +27,7 @@ public class TaskFourTests {
     void task_four_verifier() throws InterruptedException {
         userPopulator.populate();
         String[] transactionLines = fileLoader.loadStrings("/test_data/alskdjfh.fhdjsk");
-        Thread.sleep(10000);
+        Thread.sleep(5000);
         for (String transactionLine : transactionLines) {
             kafkaProducer.send(transactionLine);
         }
